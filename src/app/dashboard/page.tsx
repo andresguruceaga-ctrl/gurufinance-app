@@ -10,23 +10,20 @@ export default function Dashboard() {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState("")
-  const [category, setCategory] = useState("Alimentación")
+  const [category, setCategory] = useState("Supermercado")
   const [frequency, setFrequency] = useState("Mensual")
 
-  // Cargar gastos reales al entrar
   useEffect(() => {
     fetch("/api/expenses")
       .then(res => res.json())
       .then(data => setExpenses(data))
   }, [])
 
-  // Calcular totales
   const monthlyTotal = expenses.reduce((acc, exp) => {
     const factors: Record<string, number> = { Mensual: 1, Trimestral: 1/3, Cuatrimestral: 1/4, Semestral: 1/6, Anual: 1/12 }
     return acc + (exp.amount * (factors[exp.frequency] || 1))
   }, 0)
 
-  // Agregar nuevo gasto
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
     if(!description || !amount) return
@@ -59,7 +56,7 @@ export default function Dashboard() {
       <main className="flex-1 p-8 overflow-y-auto">
         <h1 className="text-3xl font-bold mb-6">Resumen General</h1>
         
-        {/* Cards Resumen */}
+        {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500">
             <p className="text-gray-500 text-sm">Gastos del Mes</p>
@@ -76,19 +73,36 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Formulario Agregar */}
+          {/* Formulario */}
           <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm h-fit">
             <h3 className="font-semibold mb-4 text-lg">Agregar Gasto</h3>
             <form onSubmit={handleAdd} className="space-y-3">
               <input type="text" placeholder="Descripción" className="w-full border rounded-lg p-2" value={description} onChange={e => setDescription(e.target.value)} required />
               <input type="number" placeholder="Monto" className="w-full border rounded-lg p-2" value={amount} onChange={e => setAmount(e.target.value)} required />
+              
+              {/* Selector de Categorías Actualizado */}
               <select className="w-full border rounded-lg p-2" value={category} onChange={e => setCategory(e.target.value)}>
-                <option>Alimentación</option>
-                <option>Transporte</option>
-                <option>Ocio</option>
-                <option>Servicios</option>
-                <option>Otros</option>
+                <option>Alquiler</option>
+                <option>Hipoteca</option>
+                <option>Supermercado</option>
+                <option>Colegio</option>
+                <option>Campamentos</option>
+                <option>ExtraCurriculares</option>
+                <option>Energia</option>
+                <option>Agua</option>
+                <option>Internet + Telefono</option>
+                <option>Ejercicios</option>
+                <option>Salidas</option>
+                <option>Vacaciones</option>
+                <option>Seguro</option>
+                <option>Salud</option>
+                <option>Gasolina</option>
+                <option>Prestamo Carro</option>
+                <option>Netflix</option>
+                <option>Compras por Internet</option>
+                <option>Ropa</option>
               </select>
+
               <select className="w-full border rounded-lg p-2" value={frequency} onChange={e => setFrequency(e.target.value)}>
                 <option value="Mensual">Mensual</option>
                 <option value="Trimestral">Trimestral</option>
@@ -99,7 +113,7 @@ export default function Dashboard() {
             </form>
           </div>
 
-          {/* Tabla de Gastos */}
+          {/* Tabla */}
           <div className="lg:col-span-2 bg-white rounded-xl shadow-sm overflow-hidden">
             <div className="p-4 border-b bg-gray-50">
               <h3 className="font-semibold">Tus Gastos</h3>
@@ -124,7 +138,7 @@ export default function Dashboard() {
                     </tr>
                   ))}
                   {expenses.length === 0 && (
-                    <tr><td colSpan={4} className="p-4 text-center text-gray-400">No hay gastos aún. Agrega el primero.</td></tr>
+                    <tr><td colSpan={4} className="p-4 text-center text-gray-400">No hay gastos aún.</td></tr>
                   )}
                 </tbody>
               </table>
